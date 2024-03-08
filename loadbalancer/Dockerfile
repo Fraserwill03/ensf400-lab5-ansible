@@ -1,17 +1,27 @@
 FROM alpine:3.9 as alpine-systemd
+RUN apk --update --no-cache add openrc python && \
+  ln -sf /sbin/openrc-init /sbin/init
 
-RUN 
+ENTRYPOINT ["/sbin/init"]
+
+
+FROM alpine-systemd as alpine-sshd
 
 RUN apk update && \
-    apk add --no-cache openssh-server && \
+    apk add bash git openssh rsync augeas shadow && \
+    deluser $(getent passwd 33 | cut -d: -f1) && \
+    delgroup $(getent group 33 | cut -d: -f1) 2>/dev/null || true && \
+    mkdir -p ~root/.ssh /etc/authorized_keys && chmod 700 ~root/.ssh/ && \
+    augtool 'set /files/etc/ssh/sshd_config/AuthorizedKeysFile ".ssh/authorized_keys /etc/authorized_keys/%u"' && \
+    echo -e "Port 2226\n" >> /etc/ssh/sshd_config && \
+    cp -a /etc/ssh /etc/ssh.cache && \
     rm -rf /var/cache/apk/*
 
-# Copy SSH keys
-COPY secrets/id_rsa.pub /root/.ssh/authorized_keys
+EXPOSE 2226
+EXPOSE 80
 
-# Copy custom Nginx configuration files
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY docker-entrypoint.sh /entry.sh
+RUN chmod a+x /entry.sh
+ENTRYPOINT ["/entry.sh"]
 
-# Expose ports
-EXPOSE 80 2226
+CMD ["/usr/sbin/sshd", "-D", "-e", "-f", "/etc/ssh/sshd_config"]

@@ -6,7 +6,7 @@ services:
     build:
       context: managed-host/alpine/app1
     restart: unless-stopped
-    network_mode: "bridge"
+    # network_mode: "bridge"
     environment:
       - SSH_ENABLE_ROOT=true
     ports:
@@ -14,14 +14,12 @@ services:
       - "2223:2223"
     volumes:
       - ./secrets/id_rsa_container.pub:/root/.ssh/authorized_keys
-    networks:
-      - loadbalancing
 
   managedhost-app-2:
     build:
       context: managed-host/alpine/app2
     restart: unless-stopped
-    network_mode: "bridge"
+    # network_mode: "bridge"
     environment:
       - SSH_ENABLE_ROOT=true
     ports:
@@ -29,14 +27,12 @@ services:
       - "2224:2224"
     volumes:
       - ./secrets/id_rsa_container.pub:/root/.ssh/authorized_keys
-    networks:
-      - loadbalancing
 
   managedhost-app-3:
     build:
       context: managed-host/alpine/app3
     restart: unless-stopped
-    network_mode: "bridge"
+    # network_mode: "bridge"
     environment:
       - SSH_ENABLE_ROOT=true
     ports:
@@ -44,8 +40,6 @@ services:
       - "2225:2225"
     volumes:
       - ./secrets/id_rsa_container.pub:/root/.ssh/authorized_keys
-    networks:
-      - loadbalancing
  
   loadbalancer:
     build:
@@ -53,12 +47,11 @@ services:
     ports:
       - "80:80"
       - "2226:2226"
-    networks:
-      - loadbalancing
     depends_on:
       - managedhost-app-1
       - managedhost-app-2
-      - managedhost-app-3
-
-networks:
-  loadbalancing:
+    # restart: unless-stopped
+    volumes:
+      - ./secrets/id_rsa_container.pub:/root/.ssh/authorized_keys
+    environment:
+      - SSH_ENABLE_ROOT=true
