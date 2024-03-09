@@ -50,6 +50,7 @@ services:
     depends_on:
       - managedhost-app-1
       - managedhost-app-2
+      - managedhost-app-3
     # restart: unless-stopped
     volumes:
       - ./secrets/id_rsa_container.pub:/root/.ssh/authorized_keys
