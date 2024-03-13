@@ -58,6 +58,3 @@
   tasks:
   - name: "start nginx"
     command: nginx
-  
-
-

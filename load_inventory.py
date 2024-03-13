@@ -23,7 +23,6 @@ for group in groups:
 
 # Set env vars so the command will run correctly
 os.environ['ANSIBLE_CONFIG'] = config_path
-os.environ['ANSIBLE_HOSTS'] = inventory_path  # Optional if your inventory is not in the default location
 
 print("\nPing results")
 # Please note that the run_command prints the output on its own

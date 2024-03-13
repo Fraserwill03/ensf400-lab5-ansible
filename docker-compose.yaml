@@ -6,7 +6,6 @@ services:
     build:
       context: managed-host/alpine/app1
     restart: unless-stopped
-    # network_mode: "bridge"
     environment:
       - SSH_ENABLE_ROOT=true
     ports:
@@ -19,7 +18,6 @@ services:
     build:
       context: managed-host/alpine/app2
     restart: unless-stopped
-    # network_mode: "bridge"
     environment:
       - SSH_ENABLE_ROOT=true
     ports:
@@ -32,7 +30,6 @@ services:
     build:
       context: managed-host/alpine/app3
     restart: unless-stopped
-    # network_mode: "bridge"
     environment:
       - SSH_ENABLE_ROOT=true
     ports:
