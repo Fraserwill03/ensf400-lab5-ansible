@@ -8,6 +8,9 @@ inventory_path = '/workspaces/ensf400-lab5-ansible/hosts.yml'
 playbook_path = '/workspaces/ensf400-lab5-ansible/hello.yml'
 config_path = '/workspaces/ensf400-lab5-ansible/ansible.cfg'
 
+# Set env vars so the command will run correctly
+# This is needed because the ansible config is in a world writeable directory
+# So ansible does not automatically read from the config file
 os.environ['ANSIBLE_CONFIG'] = config_path
 
 results = ansible_runner.run(inventory=inventory_path, playbook=playbook_path)
